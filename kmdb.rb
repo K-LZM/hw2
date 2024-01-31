@@ -129,42 +129,45 @@ for person in actor
     new_actor.save
 end
 
-Batman_Begins = Movie.find_by({"title" => "Batman Begins"})
-Christian_Bale = Actor.find_by({"name" => "Christian Bale"})
+def add_role(movie_title, actor_name, character_name)
+    movie = Movie.find_by({ "title" => movie_title })
+    actor = Actor.find_by({ "name" => actor_name })
+    new_role = Role.new
+    new_role["movie_id"] = movie["id"]
+    new_role["actor_id"] = actor["id"]
+    new_role["character_name"] = character_name
+    new_role.save
+end
 
-new_role = Role.new
-new_role["movie_id"] = Batman_Begins["id"]
-new_role["actor_id"] = Christian_Bale["id"]
-new_role["character_name"] = "Bruce Wayne"
-new_role.save
+add_role("Batman Begins", "Christian Bale", "Bruce Wayne")
+add_role("Batman Begins", "Michael Caine", "Alfred")
+add_role("Batman Begins", "Liam Neeson", "Ra's Al Ghul")
+add_role("Batman Begins", "Katie Holmes", "Rachel Dawes")
+add_role("Batman Begins", "Gary Oldman", "Commissioner Gordon")
 
-Michael_Caine = Actor.find_by({"name" => "Michael Caine"})
-new_role = Role.new
-new_role["movie_id"] = Batman_Begins["id"]
-new_role["actor_id"] = Michael_Caine["id"]
-new_role["character_name"] = "Alfred"
-new_role.save
+add_role("The Dark Knight", "Christian Bale", "Bruce Wayne")
+add_role("The Dark Knight", "Heath Ledger", "Joker")
+add_role("The Dark Knight", "Aaron Eckhart", "Harvey Dent")
+add_role("The Dark Knight", "Michael Caine", "Alfred")
+add_role("The Dark Knight", "Maggie Gyllenhaal", "Rachel Dawes")
 
+add_role("The Dark Knight Rises", "Christian Bale", "Bruce Wayne")
+add_role("The Dark Knight Rises", "Gary Oldman", "Commissioner Gordon")
+add_role("The Dark Knight Rises", "Tom Hardy", "Bane")
+add_role("The Dark Knight Rises", "Joseph Gordon-Levitt", "John Blake")
+add_role("The Dark Knight Rises", "Anne Hathaway", "Selina Kyle")
 
-The_Dark_Knight = Movie.find_by({"title" => "The Dark Knight"})
+# Batman_Begins = Movie.find_by({"title" => "Batman Begins"})
+# Christian_Bale = Actor.find_by({"name" => "Christian Bale"})
 
-new_role = Role.new
-new_role["movie_id"] = Batman_Begins["id"]
-new_role["actor_id"] = The_Dark_Knight["id"]
-new_role["character_name"] = "Bruce Wayne"
-new_role.save
+# new_role = Role.new
+# new_role["movie_id"] = Batman_Begins["id"]
+# new_role["actor_id"] = Christian_Bale["id"]
+# new_role["character_name"] = "Bruce Wayne"
+# new_role.save
+  
 
-The_Dark_Knight_Rises = Movie.find_by({"title" => "The Dark Knight Risest"})
-
-
-# puts Actor.all.inspect
-
-
-# new_actor = Actor.new
-# new_actor["name"] = "Michael Caine"
-
-
-puts Movie.all.inspect
+# puts Movie.all.inspect
 
 # Prints a header for the movies output
 puts "Movies"
@@ -174,20 +177,19 @@ puts ""
 # Query the movies data and loop through the results to display the movies output.
 # TODO!
 
-movie_list = Movie.all
-for movie in movie_list
-   
+# Movie.all.each do |movie|
+#     studio = Studio.find_by({ "id" => movie["studio_id"] })
+#     puts "#{movie["title"]} #{movie["year_released"]} #{movie["rated"]} #{studio["name"]}"
+# end
+
+
+for movie in Movie.all
     title = movie["title"]
     year_released = movie["year_released"]
     rated = movie["rated"]
-    Studio.where({ "studio_id" => movie["studio_id"] })
-
-    puts "#{title} #{year_released} #{rated} #{studio_name}"
+    studio = Studio.find_by({ "id" => movie["studio_id"] })
+    puts "#{title}   #{year_released}   #{rated}   #{studio["name"]}"
   end
-
-# for contact in apple_contact
-#     puts "#{contact["first_name"]} #{contact["last_name"]}"
-# end
 
 # Prints a header for the cast output
 puts ""
@@ -197,7 +199,9 @@ puts ""
 
 # Query the cast data and loop through the results to display the cast output for each movie.
 # TODO!
-
-# for contact in apple_contact
-#     puts "#{contact["first_name"]} #{contact["last_name"]}"
-# end
+for role in Role.all
+    movie = Movie.find_by({ "id" => role["movie_id"]})
+    actor = Actor.find_by({ "id" => role["actor_id"]})
+    character = role["character_name"]
+    puts "#{movie["title"]}   #{actor["name"]}   #{character}"
+  end
