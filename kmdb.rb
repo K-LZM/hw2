@@ -70,9 +70,9 @@
 # Delete existing data, so you'll start fresh each time this script is run.
 # Use `Model.destroy_all` code.
 # TODO!
-Actor.destroy_all
-Movie.destroy_all
 Role.destroy_all
+Movie.destroy_all
+Actor.destroy_all
 Studio.destroy_all
 
 # Generate models and tables, according to the domain model.
@@ -165,9 +165,6 @@ add_role("The Dark Knight Rises", "Anne Hathaway", "Selina Kyle")
 # new_role["actor_id"] = Christian_Bale["id"]
 # new_role["character_name"] = "Bruce Wayne"
 # new_role.save
-  
-
-# puts Movie.all.inspect
 
 # Prints a header for the movies output
 puts "Movies"
@@ -177,18 +174,21 @@ puts ""
 # Query the movies data and loop through the results to display the movies output.
 # TODO!
 
-# Movie.all.each do |movie|
-#     studio = Studio.find_by({ "id" => movie["studio_id"] })
-#     puts "#{movie["title"]} #{movie["year_released"]} #{movie["rated"]} #{studio["name"]}"
-# end
 
+max_title_length = Movie.maximum("LENGTH(title)") || 0
+max_year_length = Movie.maximum("year_released").to_s.length
+max_rated_length = Movie.maximum("LENGTH(rated)") || 0
+max_studio_name_length = Studio.maximum("LENGTH(name)") || 0
+
+format_string = "%-#{max_title_length + 2}s %-#{max_year_length + 2}s %-#{max_rated_length + 2}s %-#{max_studio_name_length + 2}s\n"
 
 for movie in Movie.all
     title = movie["title"]
     year_released = movie["year_released"]
     rated = movie["rated"]
     studio = Studio.find_by({ "id" => movie["studio_id"] })
-    puts "#{title}   #{year_released}   #{rated}   #{studio["name"]}"
+    printf(format_string, title, year_released, rated, studio["name"])
+    # puts "#{title}   #{year_released}   #{rated}   #{studio["name"]}"
   end
 
 # Prints a header for the cast output
@@ -199,9 +199,17 @@ puts ""
 
 # Query the cast data and loop through the results to display the cast output for each movie.
 # TODO!
+
+max_title_length = Movie.maximum("LENGTH(title)") || 0
+max_actor_length = Actor.maximum("LENGTH(name)") || 0
+max_character_length = Role.maximum("LENGTH(character_name)") || 0
+
+format_string = "%-#{max_title_length + 2}s %-#{max_actor_length + 2}s %-#{max_character_length + 2}s\n"
+
 for role in Role.all
     movie = Movie.find_by({ "id" => role["movie_id"]})
     actor = Actor.find_by({ "id" => role["actor_id"]})
     character = role["character_name"]
-    puts "#{movie["title"]}   #{actor["name"]}   #{character}"
+    printf(format_string, movie["title"], actor["name"], character)
+    # puts "#{movie["title"]}   #{actor["name"]}   #{character}"
   end
